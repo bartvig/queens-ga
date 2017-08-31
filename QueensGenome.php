@@ -16,9 +16,9 @@ class QueensGenome extends Genome {
     parent::__construct($randomGenerator);
   }
 
-  public function generate($firstPart = NULL, $secondPart = NULL, $thirdPart = NULL) {
-    if (!is_null($firstPart) && !is_null($secondPart) && !is_null($thirdPart)) {
-      parent::generate($firstPart, $secondPart, $thirdPart);
+  public function generate(array $parts = []) {
+    if (!empty($parts)) {
+      parent::generate($parts);
       return;
     }
 
