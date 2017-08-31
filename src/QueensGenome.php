@@ -31,7 +31,42 @@ class QueensGenome extends Genome {
   }
 
   public function mutate() {
-    // TODO: Implement mutate() method.
+    $rnd = rand(1,3);
+
+    switch ($rnd) {
+      case 1:
+        // Change one queen one position.
+        $random = $this->randomGenerator;
+        $rnd = $random();
+        $direction = rand(0,1);
+        if ($direction == 0) {
+          $direction = -1;
+        }
+        $new_val = ($this->genome[$rnd - 1] - 1 + $direction) % 8;
+        if ($new_val < 0) {
+          $new_val += 8;
+        }
+        $this->genome[$rnd - 1] = $new_val + 1;
+        break;
+
+      case 2:
+        // Change one queen randomly in same row.
+        $random = $this->randomGenerator;
+        $rnd1 = $random();
+        $rnd2 = $random();
+        $this->genome[$rnd1 - 1] = $rnd2;
+        break;
+
+      case 3:
+        // Change two columns randomly.
+        $random = $this->randomGenerator;
+        $rnd1 = $random() - 1;
+        $rnd2 = $random() - 1;
+        $swap = $this->genome[$rnd1];
+        $this->genome[$rnd1] = $this->genome[$rnd2];
+        $this->genome[$rnd2] = $swap;
+        break;
+    }
   }
 
   /**
@@ -87,14 +122,22 @@ class QueensGenome extends Genome {
   }
 
   public function getPart($a, $b) {
-    return array_splice($this->genome, $a - 1, $b - $a + 1);
+    $genome = $this->genome;
+    $result = array_slice($genome, $a - 1, $b - $a + 1);
+    return $result;
   }
 
   public function toString() {
     $output = ['', '', '', '', '', '', '', ''];
 
     for ($column = 0; $column < 8; $column++) {
+      if ($this->genome[$column] < 1 || $this->genome[$column] > 8) {
+        print "ERROR! The value is: " . $this->genome[$column] . "\n";
+      }
       for ($row = 0; $row < 8; $row++) {
+        if (!isset($this->genome[$column])) {
+          print "something is wrong. genome: " . print_r($this->genome, 1) . "\n";
+        }
         if ($this->genome[$column]-1 == $row) {
           $output[$row] .= 'Q';
         }
