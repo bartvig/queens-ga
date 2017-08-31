@@ -9,6 +9,7 @@
 namespace QueensGA;
 
 use SimpleGA\Genome;
+use SimpleGA\SimpleGAException;
 
 class QueensGenome extends Genome {
 
@@ -19,6 +20,9 @@ class QueensGenome extends Genome {
   public function generate(array $parts = []) {
     if (!empty($parts)) {
       parent::generate($parts);
+      if (count($this->genome) > 8) {
+        throw new SimpleGAException('There are too many genes in genome', SIMPLEGA_TOO_MANY_GENES);
+      }
       return;
     }
 
@@ -119,12 +123,6 @@ class QueensGenome extends Genome {
     }
 
     $this->fitness = $fitness;
-  }
-
-  public function getPart($a, $b) {
-    $genome = $this->genome;
-    $result = array_slice($genome, $a - 1, $b - $a + 1);
-    return $result;
   }
 
   public function toString() {
