@@ -12,7 +12,7 @@ use SimpleGA\Genome;
 
 class QueensGenome extends Genome {
 
-  public function __construct(\SimpleGA\RandomInterface $randomGenerator) {
+  public function __construct($randomGenerator) {
     parent::__construct($randomGenerator);
   }
 
