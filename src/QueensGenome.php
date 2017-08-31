@@ -86,6 +86,10 @@ class QueensGenome extends Genome {
     $this->fitness = $fitness;
   }
 
+  public function getPart($a, $b) {
+    return array_splice($this->genome, $a - 1, $b - $a + 1);
+  }
+
   public function toString() {
     $output = ['', '', '', '', '', '', '', ''];
 
