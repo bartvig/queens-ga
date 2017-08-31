@@ -17,6 +17,17 @@ class QueensGenome extends Genome {
     parent::__construct($randomGenerator);
   }
 
+  /**
+   * Generate genome.
+   *
+   * Either use parent class to generate from existing genes or generate
+   * randomly.
+   *
+   * @param array $parts
+   *   Existing gene parts.
+   *
+   * @throws \SimpleGA\SimpleGAException
+   */
   public function generate(array $parts = []) {
     if (!empty($parts)) {
       parent::generate($parts);
@@ -26,7 +37,9 @@ class QueensGenome extends Genome {
       return;
     }
 
+    // Generate new gene by random.
     $this->genome = [];
+    /** @var \closure $random_generator */
     $random_generator = $this->randomGenerator;
     for ($i = 0; $i < 8; $i++) {
       $random = $random_generator();
@@ -34,12 +47,21 @@ class QueensGenome extends Genome {
     }
   }
 
+  /**
+   * Mutate genome.
+   *
+   * There are three different mutations:
+   *  1. Move random queen up or down in column.
+   *  2. Move random queen to a random position in column.
+   *  3. Swap two random columns.
+   */
   public function mutate() {
     $rnd = rand(1,3);
 
     switch ($rnd) {
       case 1:
         // Change one queen one position.
+        /** @var \closure $random */
         $random = $this->randomGenerator;
         $rnd = $random();
         $direction = rand(0,1);
@@ -54,7 +76,8 @@ class QueensGenome extends Genome {
         break;
 
       case 2:
-        // Change one queen randomly in same row.
+        // Change one queen randomly in same column.
+        /** @var \closure $random */
         $random = $this->randomGenerator;
         $rnd1 = $random();
         $rnd2 = $random();
@@ -63,6 +86,7 @@ class QueensGenome extends Genome {
 
       case 3:
         // Change two columns randomly.
+        /** @var \closure $random */
         $random = $this->randomGenerator;
         $rnd1 = $random() - 1;
         $rnd2 = $random() - 1;
@@ -70,11 +94,14 @@ class QueensGenome extends Genome {
         $this->genome[$rnd1] = $this->genome[$rnd2];
         $this->genome[$rnd2] = $swap;
         break;
+
+      default:
+        break;
     }
   }
 
   /**
-   * QOD fitness evaluation function.
+   * Fitness evaluation function.
    */
   public function evaluate() {
     $fitness = 0;
@@ -112,6 +139,7 @@ class QueensGenome extends Genome {
       $column++;
     }
 
+    // Sum all bad queens.
     foreach ($rows as $val) {
       $fitness += $val;
     }
@@ -125,16 +153,25 @@ class QueensGenome extends Genome {
     $this->fitness = $fitness;
   }
 
+  /**
+   * Produce string output of genome.
+   *
+   * @return string
+   *   8x8 table with "Q" or ".".
+   *
+   * @throws \SimpleGA\SimpleGAException
+   *   Throws exception if gene value is wrong or doesn't exist.
+   */
   public function toString() {
     $output = ['', '', '', '', '', '', '', ''];
 
     for ($column = 0; $column < 8; $column++) {
       if ($this->genome[$column] < 1 || $this->genome[$column] > 8) {
-        print "ERROR! The value is: " . $this->genome[$column] . "\n";
+        throw new SimpleGAException('The value is not between 1 and 8. Value: ' . $this->genome[$column], SIMPLEGA_WRONG_GENE_VALUE);
       }
       for ($row = 0; $row < 8; $row++) {
         if (!isset($this->genome[$column])) {
-          print "something is wrong. genome: " . print_r($this->genome, 1) . "\n";
+          throw new SimpleGAException('Gene doesn\'t exist.', SIMPLEGA_GENE_NOT_EXISTS);
         }
         if ($this->genome[$column]-1 == $row) {
           $output[$row] .= 'Q';
