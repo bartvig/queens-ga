@@ -28,7 +28,7 @@ class QueensGenome extends Genome {
    *
    * @throws \SimpleGA\SimpleGAException
    */
-  public function generate(array $parts = []) {
+  public function generate($parts = []) {
     if (!empty($parts)) {
       parent::generate($parts);
       if (count($this->genome) > 8) {
@@ -56,7 +56,7 @@ class QueensGenome extends Genome {
    *  3. Swap two random columns.
    */
   public function mutate() {
-    $rnd = rand(1,3);
+    $rnd = rand(1,4);
 
     switch ($rnd) {
       case 1:
@@ -95,6 +95,14 @@ class QueensGenome extends Genome {
         $this->genome[$rnd2] = $swap;
         break;
 
+      case 4:
+        // Swap two neighbour columns.
+        $random = rand(0,6);
+        $swap = $this->genome[$random];
+        $this->genome[$random] = $this->genome[$random + 1];
+        $this->genome[$random + 1] = $swap;
+        break;
+
       default:
         break;
     }
@@ -103,7 +111,7 @@ class QueensGenome extends Genome {
   /**
    * Fitness evaluation function.
    */
-  public function evaluate() {
+  public function evaluate($test) {
     $fitness = 0;
     $rows = [];
     $column = 0;
