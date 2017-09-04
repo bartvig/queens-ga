@@ -13,8 +13,8 @@ use SimpleGA\SimpleGAException;
 
 class QueensGenome extends Genome {
 
-  public function __construct($randomGenerator) {
-    parent::__construct($randomGenerator);
+  public function __construct($container) {
+    parent::__construct($container);
   }
 
   /**
@@ -40,7 +40,7 @@ class QueensGenome extends Genome {
     // Generate new gene by random.
     $this->genome = [];
     /** @var \closure $random_generator */
-    $random_generator = $this->randomGenerator;
+    $random_generator = $this->container['random_generator'];
     for ($i = 0; $i < 8; $i++) {
       $random = $random_generator();
       $this->genome[$i] = $random;
@@ -62,7 +62,7 @@ class QueensGenome extends Genome {
       case 1:
         // Change one queen one position.
         /** @var \closure $random */
-        $random = $this->randomGenerator;
+        $random = $this->container['random_generator'];
         $rnd = $random();
         $direction = rand(0,1);
         if ($direction == 0) {
@@ -78,7 +78,7 @@ class QueensGenome extends Genome {
       case 2:
         // Change one queen randomly in same column.
         /** @var \closure $random */
-        $random = $this->randomGenerator;
+        $random = $this->container['random_generator'];
         $rnd1 = $random();
         $rnd2 = $random();
         $this->genome[$rnd1 - 1] = $rnd2;
@@ -87,7 +87,7 @@ class QueensGenome extends Genome {
       case 3:
         // Change two columns randomly.
         /** @var \closure $random */
-        $random = $this->randomGenerator;
+        $random = $this->container['random_generator'];
         $rnd1 = $random() - 1;
         $rnd2 = $random() - 1;
         $swap = $this->genome[$rnd1];
